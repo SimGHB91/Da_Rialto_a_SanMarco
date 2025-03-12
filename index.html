@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- primary meta tags -->
+    <title>Chat Heritage</title>
+    <meta name="title" content="Chat Heritage">
+    <meta name="description" content="*************************************">
+
+    <!-- favicon -->
+    <link rel="shortcut icon" href="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fhotemoji.com%2Fimages%2Femoji%2F0%2Fmmj5ipu6ds50.png&f=1&nofb=1&ipt=49bdd956a93d8fbdd84720256334ecc308a67e3c8141a46371f22ea984c58492&ipo=images" type="image/svg+xml">
+
+    <!-- custom css link -->
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css'>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.min.css'>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- https://github.com/perliedman/leaflet-routing-machine -->
+
+    <!-- google font link -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/ed4a3d9564.js" crossorigin="anonymous"></script>
+
+    <!-- link utili per il codice 
+      https://beautifier.io
+    
+    -->
+    <style>
+        /******************************************** STILI DI TESTO **************************************/
+    </style>
+</head>
+
+<body>
+    <!-- ELEMENTO DROPDOWN SELEZIONE LINGUA -->
+    <div class="dropdown" tab-index="0">
+        <button id="dropdown-btn"></button>
+        <ul class="dropdown-content" id="dropdown-content"></ul>
+    </div>
+
+    <!-- SEZIONE TITOLI E DATI GENERALI PERCORSO -->
+    <div class="maptitle">
+        <h1 data-key="titolo">Da Rialto a San Marco</h1>
+        <h2 data-key="sottotitolo1">"Se dovessi cercare una parola che sostituisce “musica” potrei pensare soltanto a Venezia." <br><cite>(Friedrich Nietzsche)</cite></h2>
+        <!-- <h3 data-key="sottotitolo2">Consulta la mappa interattiva di questo percorso e scopri l'anteprima di ogni singola tappa!</h3> -->
+        <ul class="custom-list">
+            <li><i class="fa fa-map" aria-hidden="true"></i>
+                <h5 data-key="itemlist1">Interagisci con la mappa</h5>
+            </li>
+            <li><i class="fa fa-map-marker" aria-hidden="true"></i>
+                <h5 data-key="itemlist2">Scopri l'anteprima di ogni tappa</h5>
+            </li>
+            <li><i class="fa fa-commenting" aria-hidden="true"></i>
+                <h5 data-key="itemlist3">Accedi al percorso chatbot</h5>
+            </li>
+            <li><i class="fa fa-street-view" aria-hidden="true"></i>
+                <h5 data-key="itemlist4">Lasciati guidare da Leo!</h5>
+            </li>
+        </ul>
+
+        <div class="info-boxes">
+            <div class="info-box">
+                <div class="icon-container">
+                    <i class="fa fa-clock-o" aria-hidden="true"></i> <!-- Puoi sostituire con l'icona che preferisci -->
+                </div>
+                <div class="info-content">
+                    <h3 data-key="tempo_totale">Tempo totale: </h3>
+                    <p data-key="valore_tempo">1 ora</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="icon-container">
+                    <i class="fa fa-road" aria-hidden="true"></i> <!-- Puoi sostituire con l'icona che preferisci -->
+                </div>
+                <div class="info-content">
+                    <h3 data-key="distanza_totale">Distanza totale:</h3>
+                    <p data-key="valore_distanza">1 km</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- SEZIONE RELATIVA SOLO ALLA MAPPA -->
+    <div id="map"></div>
+
+    <!-- SEZIONE TOTALE DEI CAROSELLI IMMAGINI E TESTI -->
+    <div class="sld-wrp" id="caroselli">
+        <!-- CAROSELLO MINIATURE IMMAGINI -->
+        <div class="slider-nav">
+            <div class="slide-btn" id="slide-1">
+                <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.victorianweb.org%2Fphotos%2Fvenice%2F191.jpg&f=1&nofb=1&ipt=c4a0040769497a39d3e67556aa7893c663321d711afeac80acdca9dc68488333&ipo=images" alt="foto1" oncontextmenu="return false;" ondragstart="return false;" onmousedown="return false;">
+            </div>
+            <div class="slide-btn" id="slide-2">
+                <img src="https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.veneziatiamo.eu%2Fpictures%2FCortedelteatro_SANMARCO_04.jpg&f=1&nofb=1&ipt=fd983f3d2cf62fd220863236f97c82041f1ce65f58b5349b2eeddc2f47f55a6f&ipo=images" alt="foto2" alt="foto1" oncontextmenu="return false;" ondragstart="return false;" onmousedown="return false;">
+                <div class="maschera"></div>
+            </div>
+            <div class="slide-btn" id="slide-3">
+                <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.wXzhPkOMHlsjgpUnmbXyJwHaFj%26pid%3DApi&f=1&ipt=b4e80f313313fdf296634ecd9e9f384fbf93d800a26516c23e4b21abd86a6da5&ipo=images" alt="foto3" alt="foto1" oncontextmenu="return false;" ondragstart="return false;" onmousedown="return false;">
+                <div class="maschera"></div>
+            </div>
+            <div class="slide-btn" id="slide-4">
+                <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.9W4ejINsc7bmQuk7_8CvPQHaE7%26pid%3DApi&f=1&ipt=9fa9f8e0cca495f9b2361ec652d4b847203d5fefbf71c3da59e84e586335fc70&ipo=images" alt="foto4" alt="foto1" oncontextmenu="return false;" ondragstart="return false;" onmousedown="return false;">
+                <div class="maschera"></div>
+            </div>
+            <div class="slide-btn" id="slide-5">
+                <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.TjD0vnvBqlowfrZdVGN_kwHaFj%26pid%3DApi&f=1&ipt=3bd227b7c462ab3c3bd15126dcd889c42653d472621f7f394648394e6a8a22a4&ipo=images" alt="foto5" alt="foto1" oncontextmenu="return false;" ondragstart="return false;" onmousedown="return false;">
+                <div class="maschera"></div>
+            </div>
+            <div class="slide-btn" id="slide-6">
+                <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.wixstatic.com%2Fmedia%2F85ecbc_dfb5c234e3074af6a6d4357d8375cfd8~mv2.jpg%2Fv1%2Ffill%2Fw_980%2Ch_654%2Cal_c%2Cq_85%2Cusm_0.66_1.00_0.01%2Cenc_auto%2F85ecbc_dfb5c234e3074af6a6d4357d8375cfd8~mv2.jpg&f=1&nofb=1&ipt=a8c0edc9e4320e04297c6e3edfd99b5eb3cb5193c830e3203e29a53ccd3f4ef2&ipo=images" alt="foto6" alt="foto1" oncontextmenu="return false;" ondragstart="return false;" onmousedown="return false;">
+                <div class="maschera"></div>
+            </div>
+        </div>
+
+        <!-- CAROSELLO TESTI DESCRITTIVI PER LE IMMAGINI -->
+        <div class="slider-for">
+
+            <!------------------------------- 1 ----------------------------->
+            <div class="slide-container">
+                <div class="chat-bubble-wrapper" style="justify-content: flex-end;" id="chat-bubble-1">
+                    <div class="chat-bubble sent">
+                        <span class="emoji">🔍</span>
+                        <p style="color: #ffffff;" data-key="domanda1">Leo, dove mi trovo?</p>
+                        <div class="check-marks">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
+                                <path fill="#0040ff" d="m11.602 13.76l1.412 1.412l8.466-8.466l1.414 1.415l-9.88 9.88l-6.364-6.365l1.414-1.414l2.125 2.125zm.002-2.828l4.952-4.953l1.41 1.41l-4.952 4.953zm-2.827 5.655L7.364 18L1 11.636l1.414-1.414l1.413 1.413l-.001.001z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-bubble-wrapper" style="justify-content: flex-start;" id="chat-bubble-2">
+                    <div class="avatar"></div>
+                    <div class="chat-bubble received">
+                        <span class="emoji">📍</span>
+                        <h1 data-key="risposta1A">Palazzo Loredan</h1>
+                    </div>
+                </div>
+                <div class="chat-bubble-wrapper" style="justify-content: flex-start;" id="chat-bubble-3">
+                    <div class="avatar"></div>
+                    <div class="chat-bubble received">
+                        <p data-key="risposta1B">
+                            Palazzo Loredan, splendido edificio gotico-veneziano del XV secolo affacciato sul Canal Grande, fu residenza della potente famiglia che diede alla Repubblica diversi dogi. 
+                            Con la sua imponente facciata ornata da trifore e motivi floreali, oggi ospita l'Istituto Veneto di Scienze, Lettere ed Arti, continuando a svolgere un importante ruolo culturale nella città lagunare.
+                        </p>
+                    </div>
+                </div>
+                <div class="chat-bubble-wrapper" style="justify-content: flex-start;" id="chat-bubble-4">
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fhotemoji.com%2Fimages%2Femoji%2F0%2Fmmj5ipu6ds50.png&f=1&nofb=1&ipt=49bdd956a93d8fbdd84720256334ecc308a67e3c8141a46371f22ea984c58492&ipo=images" alt="Avatar" class="avatar">
+                    <div class="chat-bubble received">
+                        <span class="emoji">⏱️</span>
+                        <p style="font-weight: 600;" data-key="risposta1C">Questo è il tuo punto di partenza!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!------------------------------- 2 ----------------------------->
+            <div class="slide-container">
+                <div class="chat-bubble-wrapper" style="justify-content: flex-end;" id="chat-bubble-1">
+                    <div class="chat-bubble sent">
+                        <span class="emoji">🔍</span>
+                        <p style="color: #ffffff;" data-key="domanda2">Leo, dove mi trovo?</p>
+                        <div class="check-marks">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
+                                <path fill="#0040ff" d="m11.602 13.76l1.412 1.412l8.466-8.466l1.414 1.415l-9.88 9.88l-6.364-6.365l1.414-1.414l2.125 2.125zm.002-2.828l4.952-4.953l1.41 1.41l-4.952 4.953zm-2.827 5.655L7.364 18L1 11.636l1.414-1.414l1.413 1.413l-.001.001z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-bubble-wrapper" style="justify-content: flex-start;" id="chat-bubble-2">
+                    <div class="avatar"></div>
+                    <div class="chat-bubble received">
+                        <span class="emoji">📍</span>
+                        <h1 data-key="risposta2A">Corte del Teatro</h1>
+                    </div>
+                </div>
+                <div class="chat-bubble-wrapper" style="justify-content: flex-start;" id="chat-bubble-3">
+                    <div class="avatar"></div>
+                    <div class="chat-bubble received">
+                        <p data-key="risposta2B">
+                            Corte del Teatro, nascosta nel cuore del sestiere di San Marco, è un'intima piazzetta che conserva il ricordo dell'antico Teatro San Benedetto, prestigioso palcoscenico veneziano del Settecento. 
+                            Questo spazio raccolto, con la sua atmosfera silenziosa e le facciate degli edifici che raccontano secoli di storia, offre un respiro di autenticità lontano dalle rotte turistiche più battute.
+                        </p>
+                    </div>
+                </div>
+                <div class="chat-bubble-wrapper" style="justify-content: flex-start;" id="chat-bubble-4">
+                    <div class="avatar"></div>
+                    <div class="chat-bubble received">
+                        <span class="emoji">🏃🏻</span>
+                        <p style="font-weight: 600;" data-key="risposta2C">Distanza: &nbsp120 m</p>
+                    </div>
+                </div>
+                <div class="chat-bubble-wrapper" style="justify-content: flex-start;" id="chat-bubble-5">
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fhotemoji.com%2Fimages%2Femoji%2F0%2Fmmj5ipu6ds50.png&f=1&nofb=1&ipt=49bdd956a93d8fbdd84720256334ecc308a67e3c8141a46371f22ea984c58492&ipo=images" alt="Avatar" class="avatar">
+                    <div class="chat-bubble received">
+                        <span class="emoji">⏱️</span>
+                        <p style="font-weight: 600;" data-key="risposta2D">Tempo: &nbsp1 min</p>
+                    </div>
+                </div>
+            </div>
+
+            <!------------------------------- 3 ----------------------------->
+            <div class="slide-container">
+                <div class="chat-bubble-wrapper" style="justify-content: flex-end;" id="chat-bubble-1">
+                    <div class="chat-bubble sent">
+                        <span class="emoji">🔍</span>
+                        <p style="color: #ffffff;" data-key="domanda3">Leo, dove mi trovo?</p>
+                        <div class="check-marks">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
+                                <path fill="#0040ff" d="m11.602 13.76l1.412 1.412l8.466-8.466l1.414 1.415l-9.88 9.88l-6.364-6.365l1.414-1.414l2.125 2.125zm.002-2.828l4.952-4.953l1.41 1.41l-4.952 4.953zm-2.827 5.655L7.364 18L1 11.636l1.414-1.414l1.413 1.413l-.001.001z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-bubble-wrapper" style="justify-content: flex-start;" id="chat-bubble-2">
+                    <div class="avatar"></div>
+                    <div class="chat-bubble received">
+                        <span class="emoji">📍</span>
+                        <h1 data-key="risposta3A">Campo San Luca</h1>
+                    </div>
+                </div>
+                <div class="chat-bubble-wrapper" style="justify-content: flex-start;" id="chat-bubble-3">
+                    <div class="avatar"></div>
+                    <div class="chat-bubble received">
+                        <p data-key="risposta3B">
+                            Campo San Luca, vivace crocevia nel cuore commerciale di Venezia, rappresenta un importante snodo tra Rialto e San Marco, sempre animato dal passaggio di veneziani e visitatori. 
+                            Circondato da eleganti edifici e piccoli negozi, questo campo dalla forma triangolare offre uno spaccato autentico della vita quotidiana veneziana, lontano dai cliché turistici più comuni. 
+                            Al centro, l'obelisco commemorativo dedicato a Daniele Manin ricorda la rivolta contro gli austriaci del 1848, conferendo a questo spazio urbano non solo una funzione di passaggio ma anche un significato storico e simbolico per la città.
+                        </p>
+                    </div>
+                </div>
+                <div class="chat-bubble-wrapper" style="justify-content: flex-start;" id="chat-bubble-4">
+                    <div class="avatar"></div>
+                    <div class="chat-bubble received">
+                        <span class="emoji">🏃🏻</span>
+                        <p style="font-weight: 600;" data-key="risposta3C">Distanza: &nbsp65 m</p>
+                    </div>
+                </div>
+                <div class="chat-bubble-wrapper" style="justify-content: flex-start;" id="chat-bubble-5">
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fhotemoji.com%2Fimages%2Femoji%2F0%2Fmmj5ipu6ds50.png&f=1&nofb=1&ipt=49bdd956a93d8fbdd84720256334ecc308a67e3c8141a46371f22ea984c58492&ipo=images" alt="Avatar" class="avatar">
+                    <div class="chat-bubble received">
+                        <span class="emoji">⏱️</span>
+                        <p style="font-weight: 600;" data-key="risposta3D">Tempo: &nbsp1 min</p>
+                    </div>
+                </div>
+            </div>
+
+            <!------------------------------- 4 ----------------------------->
+            <div class="slide-container">
+                <div class="chat-bubble-wrapper" style="justify-content: flex-end;" id="chat-bubble-1">
+                    <div class="chat-bubble sent">
+                        <span class="emoji">🔍</span>
+                        <p style="color: #ffffff;" data-key="domanda4">Leo, dove mi trovo?</p>
+                        <div class="check-marks">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
+                                <path fill="#0040ff" d="m11.602 13.76l1.412 1.412l8.466-8.466l1.414 1.415l-9.88 9.88l-6.364-6.365l1.414-1.414l2.125 2.125zm.002-2.828l4.952-4.953l1.41 1.41l-4.952 4.953zm-2.827 5.655L7.364 18L1 11.636l1.414-1.414l1.413 1.413l-.001.001z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-bubble-wrapper" style="justify-content: flex-start;" id="chat-bubble-2">
+                    <div class="avatar"></div>
+                    <div class="chat-bubble received">
+                        <span class="emoji">📍</span>
+                        <h1 data-key="risposta4A">Rio Terrà de le Colonne</h1>
+                    </div>
+                </div>
+                <div class="chat-bubble-wrapper" style="justify-content: flex-start;" id="chat-bubble-3">
+                    <div class="avatar"></div>
+                    <div class="chat-bubble received">
+                        <p data-key="risposta4B">
+                            Rio Terrà de le Colonne, antico canale interrato come suggerisce il nome "rio terrà", è oggi una caratteristica via commerciale che taglia trasversalmente il sestiere di San Marco, collegando Campo San Luca con Campo Manin. 
+                            La strada, affiancata da edifici storici e piccole botteghe, conserva nella sua linearità la memoria dell'acqua che un tempo la percorreva, mentre le "colonne" del nome ricordano gli antichi sostegni architettonici ancora visibili in alcuni tratti. 
+                        </p>
+                    </div>
+                </div>
+                <div class="chat-bubble-wrapper" style="justify-content: flex-start;" id="chat-bubble-4">
+                    <div class="avatar"></div>
+                    <div class="chat-bubble received">
+                        <span class="emoji">🏃🏻</span>
+                        <p style="font-weight: 600;" data-key="risposta4C">Distanza: &nbsp190 m</p>
+                    </div>
+                </div>
+                <div class="chat-bubble-wrapper" style="justify-content: flex-start;" id="chat-bubble-5">
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fhotemoji.com%2Fimages%2Femoji%2F0%2Fmmj5ipu6ds50.png&f=1&nofb=1&ipt=49bdd956a93d8fbdd84720256334ecc308a67e3c8141a46371f22ea984c58492&ipo=images" alt="Avatar" class="avatar">
+                    <div class="chat-bubble received">
+                        <span class="emoji">⏱️</span>
+                        <p style="font-weight: 600;" data-key="risposta4D">Tempo: &nbsp2 min</p>
+                    </div>
+                </div>
+            </div>
+
+            <!------------------------------- 5 ----------------------------->
+            <div class="slide-container">
+                <div class="chat-bubble-wrapper" style="justify-content: flex-end;" id="chat-bubble-1">
+                    <div class="chat-bubble sent">
+                        <span class="emoji">🔍</span>
+                        <p style="color: #ffffff;" data-key="domanda5">Leo, dove mi trovo?</p>
+                        <div class="check-marks">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
+                                <path fill="#0040ff" d="m11.602 13.76l1.412 1.412l8.466-8.466l1.414 1.415l-9.88 9.88l-6.364-6.365l1.414-1.414l2.125 2.125zm.002-2.828l4.952-4.953l1.41 1.41l-4.952 4.953zm-2.827 5.655L7.364 18L1 11.636l1.414-1.414l1.413 1.413l-.001.001z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-bubble-wrapper" style="justify-content: flex-start;" id="chat-bubble-2">
+                    <div class="avatar"></div>
+                    <div class="chat-bubble received">
+                        <span class="emoji">📍</span>
+                        <h1 data-key="risposta5A">Casa dell’Angelo</h1>
+                    </div>
+                </div>
+                <div class="chat-bubble-wrapper" style="justify-content: flex-start;" id="chat-bubble-3">
+                    <div class="avatar"></div>
+                    <div class="chat-bubble received">
+                        <p data-key="risposta5B">
+                            Casa dell'Angelo, suggestivo edificio gotico situato nel sestiere di Cannaregio, si distingue per il delicato bassorilievo raffigurante un angelo che adorna la sua facciata, elemento che ha conferito il nome a questa dimora carica di fascino medievale. La struttura, con le sue eleganti bifore e i dettagli architettonici finemente conservati, rappresenta un esempio mirabile dell'edilizia veneziana del XIV secolo, testimonianza silenziosa dell'antica prosperità della Repubblica. 
+                        </p>
+                    </div>
+                </div>
+                <div class="chat-bubble-wrapper" style="justify-content: flex-start;" id="chat-bubble-4">
+                    <div class="avatar"></div>
+                    <div class="chat-bubble received">
+                        <span class="emoji">🏃🏻</span>
+                        <p style="font-weight: 600;" data-key="risposta5C">Distanza: &nbsp430 m</p>
+                    </div>
+                </div>
+                <div class="chat-bubble-wrapper" style="justify-content: flex-start;" id="chat-bubble-5">
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fhotemoji.com%2Fimages%2Femoji%2F0%2Fmmj5ipu6ds50.png&f=1&nofb=1&ipt=49bdd956a93d8fbdd84720256334ecc308a67e3c8141a46371f22ea984c58492&ipo=images" alt="Avatar" class="avatar">
+                    <div class="chat-bubble received">
+                        <span class="emoji">⏱️</span>
+                        <p style="font-weight: 600;" data-key="risposta5D">Tempo: &nbsp4 min</p>
+                    </div>
+                </div>
+            </div>
+
+            <!------------------------------- 6 ----------------------------->
+            <div class="slide-container">
+                <div class="chat-bubble-wrapper" style="justify-content: flex-end;" id="chat-bubble-1">
+                    <div class="chat-bubble sent">
+                        <span class="emoji">🔍</span>
+                        <p style="color: #ffffff;" data-key="domanda6">Leo, dove mi trovo?</p>
+                        <div class="check-marks">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
+                                <path fill="#0040ff" d="m11.602 13.76l1.412 1.412l8.466-8.466l1.414 1.415l-9.88 9.88l-6.364-6.365l1.414-1.414l2.125 2.125zm.002-2.828l4.952-4.953l1.41 1.41l-4.952 4.953zm-2.827 5.655L7.364 18L1 11.636l1.414-1.414l1.413 1.413l-.001.001z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-bubble-wrapper" style="justify-content: flex-start;" id="chat-bubble-2">
+                    <div class="avatar"></div>
+                    <div class="chat-bubble received">
+                        <span class="emoji">📍</span>
+                        <h1 data-key="risposta6A">Tra Piazza San Marco e Torre dell’Orologio</h1>
+                    </div>
+                </div>
+                <div class="chat-bubble-wrapper" style="justify-content: flex-start;" id="chat-bubble-3">
+                    <div class="avatar"></div>
+                    <div class="chat-bubble received">
+                        <p data-key="risposta6B">
+                            Proprio qui si estende uno degli spazi più iconici e storicamente significativi di Venezia, dove l'architettura bizantina della Basilica dialoga con l'eleganza rinascimentale della Torre. Questo tratto, parte della monumentale Piazza, è caratterizzato dal porticato delle Procuratie Vecchie che conduce lo sguardo verso il capolavoro di Mauro Codussi, la Torre con il suo meccanismo astronomico e le figure dei Mori che scandiscono il tempo veneziano dal 1499. 
+                        </p>
+                    </div>
+                </div>
+                <div class="chat-bubble-wrapper" style="justify-content: flex-start;" id="chat-bubble-4">
+                    <div class="avatar"></div>
+                    <div class="chat-bubble received">
+                        <span class="emoji">🏃🏻</span>
+                        <p style="font-weight: 600;" data-key="risposta6C">Distanza: &nbsp200 m</p>
+                    </div>
+                </div>
+                <div class="chat-bubble-wrapper" style="justify-content: flex-start;" id="chat-bubble-5">
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fhotemoji.com%2Fimages%2Femoji%2F0%2Fmmj5ipu6ds50.png&f=1&nofb=1&ipt=49bdd956a93d8fbdd84720256334ecc308a67e3c8141a46371f22ea984c58492&ipo=images" alt="Avatar" class="avatar">
+                    <div class="chat-bubble received">
+                        <span class="emoji">⏱️</span>
+                        <p style="font-weight: 600;" data-key="risposta6D">Tempo: &nbsp2 min</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEZIONE RELATIVA SOLO ALLA MAPPA -->
+    <div class="ctosection">
+        <h2 data-key="ctotitolo1">Unisciti a noi ed esplora il percorso!</h2> <br>
+        <!-- <h3 data-key="sottotitolo2">Consulta la mappa interattiva di questo percorso e scopri l'anteprima di ogni singola tappa!</h3> -->
+        <button class="accedipercorso" onclick="window.location.href='https://wa.me/393514312461?text=Chat%20Heritage';">
+            <svg class="svgIcon" viewBox="0 0 512 512" height="1em" xmlns="http://www.w3.org/2000/svg">
+                <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm50.7-186.9L162.4 380.6c-19.4 7.5-38.5-11.6-31-31l55.5-144.3c3.3-8.5 9.9-15.1 18.4-18.4l144.3-55.5c19.4-7.5 38.5 11.6 31 31L325.1 306.7c-3.2 8.5-9.9 15.1-18.4 18.4zM288 256a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"></path>
+            </svg>
+            Let's go!
+        </button>
+    </div>
+
+    <!-- SEZIONE DEGLI SCRIPT JS -->
+    <script src="script.js" type="text/javascript"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.js'></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+
+    <!-- Disabilitare il tasto destro, copia/incolla e scorciatoie da tastiera -->
+    <script>
+      document.addEventListener('contextmenu', event => event.preventDefault()); // Disabilita tasto destro
+      document.addEventListener('keydown', function(event) {
+          // Blocca F12 (DevTools), Ctrl+Shift+I/J/K/U (DevTools e sorgente), Ctrl+C/V/A/S/P/X (Copia/Incolla/Salva/Stampa)
+          if (event.keyCode == 123 || 
+              (event.ctrlKey && event.shiftKey && (event.keyCode == 73 || event.keyCode == 74 || event.keyCode == 75)) ||
+              (event.ctrlKey && (event.keyCode == 85 || event.keyCode == 67 || event.keyCode == 86 || event.keyCode == 65 || event.keyCode == 83 || event.keyCode == 80 || event.keyCode == 88))) {
+              event.preventDefault();
+          }
+      });
+    </script>
+
+    <!-- Impedire l'uso di DevTools -->
+    <script>
+      (function() {
+          function devtoolsDetect() {
+              let start = new Date();
+              debugger;
+              let end = new Date();
+              if (end - start > 100) { // Se DevTools è aperto, ricarica la pagina
+                  window.location.reload();
+              }
+          }
+          setInterval(devtoolsDetect, 1000);
+      })();
+    </script>
+      
+</body>
+
+</html>
