@@ -438,6 +438,56 @@
       })();
     </script>
       
+    <!-------------------------------- Script Google Apps Script per tracciabilità click nel sito ---------------------------------------------->
+    <!-- SCRIPT CLIENT (inserire in index.html) -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Aggiungiamo un debounce per limitare le richieste frequenti
+        let clickTimeout;
+        const debounceTime = 300; // ms
+        
+        document.addEventListener('click', function(event) {
+          clearTimeout(clickTimeout);
+          clickTimeout = setTimeout(function() {
+            // Raccogliamo dati più dettagliati sul click
+            const clickedElement = event.target.tagName;
+            const clickedElementId = event.target.id || '';
+            const clickedElementClass = event.target.className || '';
+            
+            // Prepariamo i dati da inviare
+            const data = {
+              timestamp: new Date().toISOString(),
+              userAgent: navigator.userAgent,
+              url: window.location.href,
+              element: clickedElement,
+              elementId: clickedElementId,
+              elementClass: clickedElementClass,
+              screenWidth: window.innerWidth,
+              screenHeight: window.innerHeight
+            };
+            
+            console.log("Invio dati di tracciamento:", data);
+            
+            // Inviamo la richiesta con gestione degli errori
+            fetch('https://script.google.com/macros/s/AKfycbx1l2fZfl2oi2YWPj6mbTM5O11FT5i47Ebm9o7lltarmlc2x0Q7uzmabIgS9lpqx5sVpw/exec', {
+              method: 'POST',
+              body: JSON.stringify(data),
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              mode: 'no-cors' // Importante per le richieste verso Google Apps Script
+            })
+            .then(response => {
+              console.log("Risposta ricevuta", response);
+            })
+            .catch(error => {
+              console.error('Errore nell\'invio dei dati di tracciamento:', error);
+            });
+          }, debounceTime);
+        });
+      });
+    </script>
+      
 </body>
 
 </html>
